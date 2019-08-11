@@ -8,6 +8,8 @@ const MARGIN = Math.floor(CELL_SIZE / 10);
 let board = new Array();
 // 移动动画时长
 const MOVE_ANIMATION_TIME = 300;
+// 最小数字
+const MIN_NUMBER = 64;
 
 window.onload = function() {
     init();
@@ -308,7 +310,7 @@ function createOneNumber() {
         j = Math.floor(Math.random() * WIDTH);
         // 如果此处是零
         if (board[i][j] == 0) {
-            board[i][j] = Math.random() > 0.5 ? 2 : 4;
+            board[i][j] = Math.random() > 0.5 ? MIN_NUMBER : 2 * MIN_NUMBER;
             // 显示数字动画
             $('#cell-' + i + '-' + j).css('background-color', getColorByNumber(board[i][j]));
             $('#cell-' + i + '-' + j).text(board[i][j]);
