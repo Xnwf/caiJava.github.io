@@ -1,0 +1,18 @@
+#game{
+    position: relative;
+    border-radius: 8px;
+    background-color: #BBADA0;
+}
+
+.default-cell {
+    position: absolute;
+    border-radius: 8px;
+    background-color: #CDC1B4;
+}
+
+.cell {
+    position: absolute;
+    border-radius: 8px;
+    text-align: center;
+    font-weight: bolder;
+}

@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<style>
+    #main {
+        position: absolute;
+        border: 2px #A4A4A4 solid;
+        border-radius: 10px;
+        padding: 5px;
+    }
+
+    .block {
+        width: 20px;
+        height: 20px;
+        border-radius: 3px;
+        margin: 1px;
+        text-align: center;
+    }
+</style>
+
+<body>
+    <div id="main"></div>
+</body>
+<script>
+    const WIDTH = 15, HEIGHT = 15, COUNT = 15;
+
+    let randarArr = [];
+    let mainDom = document.getElementById('main');
+
+    // 记录当前有多少个旗子
+    let flagCount = 0;
+    window.onload = function () {
+        init();
+    }
+
+    // 渲染
+    function render() {
+        let table = document.createElement('table');
+        for (let i = 0; i < HEIGHT; i++) {
+            let tr = document.createElement('tr');
+            for (let j = 0; j < WIDTH; j++) {
+                let td = document.createElement('td');
+                td.className = 'block';
+                td.style.backgroundColor = '#BDBDBD';
+                td.id = i + '-' + j;
+                // 点击事件
+                td.onclick = function () {
+                    click(i, j);
+                    success();
+                }
+                // 右击插旗
+                td.oncontextmenu = function (){
+                    insertFlag(i, j);
+                    success();
+                    // 防止左键菜单弹出
+                    return false;
+                }   
+                tr.appendChild(td);
+            }
+            table.appendChild(tr);
+        }
+        mainDom.appendChild(table);
+    }
+
+    // 初使化
+    function init() {
+        for (let i = 0; i < HEIGHT; i++) {
+            randarArr[i] = []
+            for (let j = 0; j < WIDTH; j++) {
+                randarArr[i][j] = { isRandar: false, roundCount: '', isShow: false };
+            }
+        }
+        createRandar();
+        roundRandarCount();
+        render();
+    }
+
+    // 创建雷
+    function createRandar() {
+        let count = 0;
+        let i, j;
+        while (count < COUNT) {
+            i = Math.floor(Math.random() * HEIGHT);
+            j = Math.floor(Math.random() * WIDTH);
+            if (!randarArr[i][j].isRandar) {
+                randarArr[i][j].isRandar = true;
+                count++;
+            }
+        }
+    }
+
+    // 计算每个方格周围有多少个雷
+    function roundRandarCount() {
+        // 记录有多少个雷
+        let count = 0;
+        for (let i = 0; i < HEIGHT; i++) {
+            for (let j = 0; j < WIDTH; j++) {
+                // 左上
+                if (i - 1 >= 0 && j - 1 >= 0) {
+                    if (randarArr[i - 1][j - 1].isRandar) { count++ }
+                }
+                // 上
+                if (i - 1 >= 0) {
+                    if (randarArr[i - 1][j].isRandar) { count++ }
+                }
+                // 右上
+                if (i - 1 >= 0 && j + 1 < WIDTH) {
+                    if (randarArr[i - 1][j + 1].isRandar) { count++ }
+                }
+                // 右
+                if (j + 1 < WIDTH) {
+                    if (randarArr[i][j + 1].isRandar) { count++ }
+                }
+                // 右下
+                if (i + 1 < HEIGHT && j + 1 < WIDTH) {
+                    if (randarArr[i + 1][j + 1].isRandar) { count++ }
+                }
+                // 下
+                if (i + 1 < HEIGHT) {
+                    if (randarArr[i + 1][j].isRandar) { count++ }
+                }
+                // 左下
+                if (i + 1 < HEIGHT && j - 1 >= 0) {
+                    if (randarArr[i + 1][j - 1].isRandar) { count++ }
+                }
+                // 左
+                if (j - 1 >= 0) {
+                    if (randarArr[i][j - 1].isRandar) { count++ }
+                }
+                if (count > 0) {
+                    randarArr[i][j].roundCount = count;
+                    count = 0;
+                }
+            }
+        }
+    }
+
+    // 点击事件
+    function click(i, j) {
+        let currentDom = document.getElementById(i + '-' + j);
+        let current = randarArr[i][j];
+        if (current.isRandar) {
+            currentDom.style.backgroundColor = '#A4A4A4';
+            currentDom.innerHTML = '<span style="color: red">@</span>';
+            showAllRandar();
+            return;
+        } else {
+            show(i, j);
+        }
+    }
+
+    // 递归显示周围没有雷的格子
+    function show(i, j) {
+        let currentDom = document.getElementById(i + '-' + j);
+        let current = randarArr[i][j];
+        if (!current.isShow) {
+            current.isShow = true;
+            currentDom.style.backgroundColor = '#A4A4A4';
+            currentDom.innerHTML = current.roundCount;
+            if (current.roundCount == '') {
+
+                // 左上
+                if (i - 1 >= 0 && j - 1 >= 0) {
+                    show(i - 1, j - 1)
+                }
+                // 上
+                if (i - 1 >= 0) {
+                    show(i - 1, j);
+                }
+                // 右上
+                if (i - 1 >= 0 && j + 1 < WIDTH) {
+                    show(i - 1, j + 1);
+                }
+                // 右
+                if (j + 1 < WIDTH) {
+                    show(i, j + 1);
+                }
+                // 右下
+                if (i + 1 < HEIGHT && j + 1 < WIDTH) {
+                    show(i + 1, j + 1);
+                }
+                // 下
+                if (i + 1 < HEIGHT) {
+                    show(i + 1, j);
+                }
+                // 左下
+                if (i + 1 < HEIGHT && j - 1 >= 0) {
+                    show(i + 1, j - 1);
+                }
+                // 左
+                if (j - 1 >= 0) {
+                    show(i, j - 1);
+                }
+            }
+        }
+    }
+
+    // 显示所有雷
+    function showAllRandar() {
+        for (let i = 0; i < HEIGHT; i++) {
+            for (let j = 0; j < WIDTH; j++) {
+                if (randarArr[i][j].isRandar) {
+                    let currentDom = document.getElementById(i + '-' + j);
+                    currentDom.style.backgroundColor = '#A4A4A4';
+                    currentDom.innerHTML = '<span style="color: red">@</span>'
+                }
+            }
+        }
+    }
+
+    function insertFlag(i, j) {
+        let current = randarArr[i][j];
+        let currentDom = document.getElementById(i + '-' + j);
+
+        // 如果已经显示了，不能插旗,旗子不能比雷多
+        if (current.isShow === false && flagCount <= COUNT) {
+            let img = document.createElement('img');
+            img.src = 'https://ss3.bdstatic.com/70cFv8Sh_Q1YnxGkpoWK1HF6hhy/it/u=312918878,3266997769&fm=26&gp=0.jpg';
+			img.style.margin = '0px';
+            img.style.width = '18px';
+            img.style.height = '18px';
+            currentDom.appendChild(img);
+            current.isShow = true;
+            flagCount ++;            
+        }
+    }
+
+    // 判断游戏是否结束 
+    function success() {
+        for (let i = 0; i < HEIGHT; i++) {
+            for (let j = 0; j < WIDTH; j++) {
+                if (randarArr[i][j].isShow === false) return ;
+            }
+        }
+        alert('success!!!!');
+    }
+</script>
+</html>
