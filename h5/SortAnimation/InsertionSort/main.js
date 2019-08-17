@@ -1,5 +1,5 @@
 const WIDTH = 400, HEIGHT = 400;
-const COLUMN_WIDTH = 10, COLUMN_MARGIN = 1;
+const COLUMN_WIDTH = 20, COLUMN_MARGIN = 1;
 const LENGTH = ~~(WIDTH / (COLUMN_WIDTH + COLUMN_MARGIN));
 const DEFAULT_COLOR = '#293462', CURRENT_SELECT_COLOR = '#f7be16', CURRENT_MIN_COLOR = '#ed1250', COMPLATE_COLOR = '#ff935c'
 
@@ -17,51 +17,44 @@ window.onload = function () {
 }
 
 function sort(ctx) {
+    let temp;
     for (let i = 0; i < sortArray.length; i++) {
-        let minIndex = i;
-        for (let j = i + 1; j < sortArray.length; j++) {
-            if (sortArray[j] < sortArray[minIndex]) {
-                minIndex = j;
+        for (let j = i + 1; j > 0; j --) {
+            if (sortArray[j - 1] > sortArray[j]) {
+                updateView(ctx, copyArray(sortArray), i, j, j - 1);
+                temp = sortArray[j - 1];
+                sortArray[j - 1] = sortArray[j];
+                sortArray[j] = temp
+            } else {
+                break;
             }
-            updateView(ctx, copyArray(sortArray), i, j, minIndex);
+            updateView(ctx, copyArray(sortArray), i, j, j - 1);
         }
-        swap(sortArray, i, minIndex);
         updateView(ctx, copyArray(sortArray), i, -1, -1);
     }
 }
 
-function updateView(ctx, array, orderIndex, currentCompareIndex, minIndex) {
+function updateView(ctx, array, orderIndex, currentCompareIndex1, currentCompareIndex2) {
     setTimeout(function () {
-        render(ctx, array, orderIndex, currentCompareIndex, minIndex);
-    }, animateTime++ * 30)
+        render(ctx, array, orderIndex, currentCompareIndex1, currentCompareIndex2);
+    }, animateTime++ * 200)
 }
 
-function render(ctx, drowArray, orderIndex, currentCompareIndex, minIndex) {
+function render(ctx, drowArray, orderIndex, currentCompareIndex1, currentCompareIndex2) {
     ctx.clearRect(0, 0, WIDTH, HEIGHT);
     for (let i = 0; i < LENGTH; i++) {
-        if (i < orderIndex) {
+        if(orderIndex == LENGTH - 1) {
             drowColumn(ctx, i, drowArray[i], COMPLATE_COLOR);
-        } else if (i == currentCompareIndex) {
-            drowColumn(ctx, i, drowArray[i], CURRENT_SELECT_COLOR);
-        } else if (i == minIndex) {
+        }else if (i == currentCompareIndex1) {
             drowColumn(ctx, i, drowArray[i], CURRENT_MIN_COLOR);
-        } else if (i == orderIndex) {
-            if (i == LENGTH - 1) {
-                drowColumn(ctx, i, drowArray[i], COMPLATE_COLOR);
-            } else {
-                drowColumn(ctx, i, drowArray[i], 'black');
-            }
+        } else if (i == currentCompareIndex2) {
+            drowColumn(ctx, i, drowArray[i], CURRENT_SELECT_COLOR);
+        } else if(i < orderIndex){
+            drowColumn(ctx, i, drowArray[i], COMPLATE_COLOR);
         } else {
-            drowColumn(ctx, i, drowArray[i], DEFAULT_COLOR)
+            drowColumn(ctx, i, drowArray[i], DEFAULT_COLOR);
         }
-
     }
-}
-
-function swap(array, i, j) {
-    let item = array[i];
-    array[i] = array[j];
-    array[j] = item;
 }
 
 function copyArray(array) {
