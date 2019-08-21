@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <canvas id="can" width="400" height="400" style="background: black"></canvas>
+</body>
+<script>
+    const ctx = document.getElementById('can').getContext('2d');
+    let body = [
+        [3, 6],
+        [4, 6],
+        [5, 6],
+    ];
+    let food = [10, 10];
+    let direction = [1, 0];
+    let interval;
+    window.onload = function() {
+        interval = setInterval(function() {
+            render();
+        }, 130);
+    }
+
+    function render() {
+        if(check()) {
+            alert('game over');
+            clearInterval(interval);
+        }
+        let length = body.length;
+        for(i = 0; i < length - 1; i ++) {
+            body[i][0] = body[i + 1][0];
+            body[i][1] = body[i + 1][1];
+        }
+        body[length - 1][0] += direction[0];
+        body[length - 1][1] += direction[1];
+
+        ctx.clearRect(0, 0, 400, 400);
+        for(let i = 0; i < length; i ++) {
+            draw(body[i][0], body[i][1], 'red');
+        }
+        draw(food[0], food[1], 'yellow');
+    }
+
+    function check() {
+        let header = body[body.length - 1];
+        if(header[0] < 0 || header[0] > 19
+            ||header[1] < 0 || header[1] > 19) return true;
+        
+        if(header[0] == food[0] && header[1] == food[1]) {
+            body.unshift([0, 0]);
+            food[0] = ~~(Math.random() * 20);
+            food[1] = ~~(Math.random() * 20);
+        }
+
+        for(let i = 0; i < body.length - 1; i ++) {
+            if (body[i][0] == header[0] && body[i][1] == header[1])
+            return true;
+        }
+        return false;
+    }
+
+    function draw(x, y, color) {
+        ctx.fillStyle = color;
+        ctx.fillRect(x*20-1, y*20-1, 18, 18);
+    }
+
+    window.onkeydown = function(e) {
+        switch(e.keyCode) {
+            case 37: 
+                if(direction[0] != 1) {
+                    direction = [0, 0];
+                    direction[0] = -1;
+                }
+                break;
+            case 38: 
+                if(direction[1] != 1) {
+                    direction = [0, 0];
+                    direction[1] = -1;
+                }
+                break;
+            case 39: 
+                if(direction[0] != -1) {
+                    direction = [0, 0];
+                    direction[0] = 1;
+                }
+                break;
+            case 40: 
+                if(direction[1] != -1) {
+                    direction = [0, 0];
+                    direction[1] = 1;
+                }
+                break;
+        }
+    }
+</script>
+</html>

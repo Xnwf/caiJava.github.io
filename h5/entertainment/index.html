@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            background: moccasin;
+        }
+        #main {
+            width: 360px;
+            height: 360px;
+        }
+        .size {
+            cursor: pointer; 
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+        }
+        .container {
+            border-radius: 10px;
+            box-shadow: 5px 5px rgba(0,0,0,0.5);
+            display: inline-block;
+            overflow: hidden;
+            margin: 5px;
+        }
+        .card-img {
+            position: absolute;
+        }
+        .card-back {
+            position: relative;
+        }
+
+        .card-show {
+            margin-left: -80px;
+            margin-top: -80px;
+            -webkit-animation: show 0.8s; 
+        }
+
+        @-webkit-keyframes show {
+            0% {
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+            100% {
+                margin-left: -80px;
+                margin-top: -80px;
+            }
+        }
+
+        .card-hidden {
+            margin-left: 0px;
+            margin-top: 0px;
+            -webkit-animation: hidden 0.8s; 
+        }
+
+        @-webkit-keyframes hidden {
+            0% {
+                margin-left: -80px;
+                margin-top: -80px;
+            }
+            100% {
+                margin-left: 0px;
+                margin-top: 0px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="main"></div>
+</body>
+<script>
+    let arr = [1,2,3,4,5,6,7,8];
+    arr.push(...arr);
+    let preDom = null;
+    for(let i = 0; i < 8; i ++) {
+        let r1 = ~~(Math.random() * 16);
+        let r2 = ~~(Math.random() * 16);
+        let item = arr[r1];
+        arr[r1] = arr[r2];
+        arr[r2] = item;
+    }
+    window.onload = function() {
+        let cardHtml = '';
+        for(let i = 0; i < arr.length; i ++) {
+            cardHtml +=
+                "<div class='container size'>"+
+                    "<img src='./img/image ("+arr[i]+").jpg' class='card-img size'></img>"+
+                    "<img src='./img/image (10).jpg' id='"+i+"' class='card-back size'></img>"+
+                "</div>"
+        }
+        document.getElementById('main').innerHTML = cardHtml;
+        let domList = document.getElementsByClassName('card-back');
+        for(let i = 0; i < domList.length; i ++) {
+            let dom = domList[i];
+            let item = preDom;
+            dom.onclick = function() {
+                if(item == null) {
+                    dom.className = "card-back size card-show";
+                    preDom = dom;
+                } else {
+                    console.log(dom.id, item.id)
+                    if (dom.id != item.id) {
+                        setTimeout(function() {
+                            console.log('ddd');
+                            item.className = "card-back size card-hidden";
+                            dom.className = "card-back size card-hidden";
+                        }, 800);
+                    }
+                    preDom = null;
+                }
+            }
+        }
+    }
+</script>
+</html>

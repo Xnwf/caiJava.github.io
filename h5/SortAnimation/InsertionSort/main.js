@@ -1,5 +1,5 @@
 const WIDTH = 400, HEIGHT = 400;
-const COLUMN_WIDTH = 20, COLUMN_MARGIN = 1;
+const COLUMN_WIDTH = 15, COLUMN_MARGIN = 1;
 const LENGTH = ~~(WIDTH / (COLUMN_WIDTH + COLUMN_MARGIN));
 const DEFAULT_COLOR = '#293462', CURRENT_SELECT_COLOR = '#f7be16', CURRENT_MIN_COLOR = '#ed1250', COMPLATE_COLOR = '#ff935c'
 
@@ -37,7 +37,7 @@ function sort(ctx) {
 function updateView(ctx, array, orderIndex, currentCompareIndex1, currentCompareIndex2) {
     setTimeout(function () {
         render(ctx, array, orderIndex, currentCompareIndex1, currentCompareIndex2);
-    }, animateTime++ * 200)
+    }, animateTime++ * 40)
 }
 
 function render(ctx, drowArray, orderIndex, currentCompareIndex1, currentCompareIndex2) {
