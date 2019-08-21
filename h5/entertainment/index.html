@@ -36,7 +36,7 @@
         .card-show {
             margin-left: -80px;
             margin-top: -80px;
-            -webkit-animation: show 0.8s; 
+            -webkit-animation: show 0.5s; 
         }
 
         @-webkit-keyframes show {
@@ -53,7 +53,7 @@
         .card-hidden {
             margin-left: 0px;
             margin-top: 0px;
-            -webkit-animation: hidden 0.8s; 
+            -webkit-animation: hidden 0.5s; 
         }
 
         @-webkit-keyframes hidden {
@@ -88,17 +88,17 @@
             cardHtml +=
                 "<div class='container size'>"+
                     "<img src='./img/image ("+arr[i]+").jpg' class='card-img size'></img>"+
-                    "<img src='./img/image (10).jpg' id='"+i+"' class='card-back size'></img>"+
+                    "<img src='./img/image (10).jpg' id='"+arr[i]+"' class='card-back size'></img>"+
                 "</div>"
         }
         document.getElementById('main').innerHTML = cardHtml;
         let domList = document.getElementsByClassName('card-back');
         for(let i = 0; i < domList.length; i ++) {
             let dom = domList[i];
-            let item = preDom;
             dom.onclick = function() {
+                let item = preDom;
+                dom.className = "card-back size card-show";
                 if(item == null) {
-                    dom.className = "card-back size card-show";
                     preDom = dom;
                 } else {
                     console.log(dom.id, item.id)
