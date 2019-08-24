@@ -346,4 +346,3 @@ function getColorByNumber(number) {
     }
 }
 
-
