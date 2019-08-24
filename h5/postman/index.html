@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,21 +8,25 @@
     <title>Postman</title>
     <script src="../tools/jquery-1.8.3.min.js"></script>
     <style>
-        .main{
+        .main {
             width: 900px;
             margin: 0 auto;
         }
+
         .long_input {
             width: 800px;
         }
+
         .param_key {
             width: 80px;
         }
+
         .param_value {
             width: 200px;
         }
     </style>
 </head>
+
 <body>
     <div class="main">
         <div>
@@ -29,10 +34,10 @@
                 <option value="get">get</option>
                 <option value="post">post</option>
             </select>
-            <input name="url" id="url" class="long_input"/>
+            <input name="url" id="url" class="long_input" />
         </div>
         <div id="param">
-            <input id="key1" class="param_key"/>=><input id="value1" class="param_value"/><br>
+            <input id="key1" class="param_key" />=><input id="value1" class="param_value" /><br>
         </div>
         <button id='addParamBtu'>add parameter</button><br>
         <button id="submit">send</button>
@@ -43,14 +48,14 @@
 <script>
     let paramLength = 1;
 
-    $('#addParamBtu').click(function() {
-        $('#param').append("<input id='key"+ ++paramLength +"' class='param_key'/>=><input id='value"+paramLength+"' class='param_value'/><br>")
+    $('#addParamBtu').click(function () {
+        $('#param').append("<input id='key" + ++paramLength + "' class='param_key'/>=><input id='value" + paramLength + "' class='param_value'/><br>")
     })
-    
+
     function getParameter() {
         let paramList = $('.param_key');
         let data = new Object();
-        for (let i = 1; i <= paramList.length; i ++) {
+        for (let i = 1; i <= paramList.length; i++) {
             let key = $('#key' + i).val();
             let value = $('#value' + i).val()
             if (key) {
@@ -60,26 +65,46 @@
         return data;
     }
 
-    window.onload = function() {
-        $('#submit').click(function() {
+    window.onload = function () {
+        $('#submit').click(function () {
             let data = getParameter();
             let method = $('#method').val();
             let url = $('#url').val();
-            if (method == 'get') {
-                if (url)
-                    $.get(url, data, (res) => { callback(res) });
-            } else if (method == 'post') {
-                if (url)
-                    $.post(url, data, (res) => { callback(res) });
-            } else {
-                alert('请求方法错误！！！');
-            }
+            $.ajax({
+                url: url,
+                // dataType: 'json',
+                type: method,
+                async: false,
+                data: data,
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
         })
     }
-    
+
     function callback(res) {
-        $('#resultJson').text(JSON.stringify(res, null, 4));
-        $('#resultView').html(res);
+        if (isJSON(res)) {
+            $('#resultJson').text(JSON.stringify(res, null, 4));
+        } else {
+            $('#resultView').html(res);
+        }
+    }
+
+    function isJSON(str) {
+        if (typeof str == 'string') {
+            try {
+                JSON.parse(str);
+                return true;
+            } catch (e) {
+                console.log(e);
+                return false;
+            }
+        }
     }
 </script>
+
 </html>
