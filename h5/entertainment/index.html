@@ -8,9 +8,8 @@
     <title>Document</title>
     <style>
         body {
-            background: moccasin;
-            background: linear-gradient(#d060fc, #241663);
-            height: 700px;
+            margin: 0px;
+            padding: 0px;
         }
 
         #main {
@@ -19,7 +18,7 @@
             width: 360px;
         }
 
-        .size {
+        img {
             cursor: pointer;
             width: 80px;
             height: 80px;
@@ -27,28 +26,35 @@
         }
 
         .container {
+            background: linear-gradient(#d060fc, #241663);            
+            height: 1000px;
+        }
+
+        .cell {
             border-radius: 10px;
+            width: 80px;
+            height: 80px;
             box-shadow: 5px 5px rgba(0, 0, 0, 0.5);
             display: inline-block;
             overflow: hidden;
             margin: 5px;
         }
 
-        .card-img {
+        .cell-img {
             position: absolute;
         }
 
-        .card-back {
+        .back-img {
             position: relative;
         }
 
-        .card-show {
+        .back-hidden {
             margin-left: -80px;
             margin-top: -80px;
-            -webkit-animation: show 0.5s;
+            -webkit-animation: hidden 0.5s;
         }
 
-        @-webkit-keyframes show {
+        @-webkit-keyframes hidden {
             0% {
                 margin-left: 0px;
                 margin-top: 0px;
@@ -60,13 +66,13 @@
             }
         }
 
-        .card-hidden {
+        .back-show {
             margin-left: 0px;
             margin-top: 0px;
-            -webkit-animation: hidden 0.5s;
+            -webkit-animation: show 0.5s;
         }
 
-        @-webkit-keyframes hidden {
+        @-webkit-keyframes show {
             0% {
                 margin-left: -80px;
                 margin-top: -80px;
@@ -81,58 +87,32 @@
 </head>
 
 <body>
-    <div id="main"></div>
+    <div class="container">
+        <div id="main"></div>
+    </div>
 </body>
 <script>
-    let arr = [1, 2, 3, 4, 5, 6, 7, 8];
-    arr.push(...arr);
-    let preDom = null;
-    let showCount = 0;
-    for (let i = 0; i < arr.length; i++) {
-        let r1 = ~~(Math.random() * 16);
-        let r2 = ~~(Math.random() * 16);
-        let item = arr[r1];
-        arr[r1] = arr[r2];
-        arr[r2] = item;
+    let list = [1, 2, 3, 4, 5, 6, 7, 8];
+    list.push(...list);
+
+    for (let i = 0; i < list.length; i++) {
+        let r1 = ~~(Math.random() * list.length);
+        let r2 = ~~(Math.random() * list.length);
+        let item = list[r1];
+        list[r1] = list[r2];
+        list[r2] = item;
     }
     window.onload = function () {
-        let cardHtml = '';
-        for (let i = 0; i < arr.length; i++) {
-            cardHtml +=
-                "<div class='container size'>" +
-                "<img src='./img/image (" + arr[i] + ").jpg' class='card-img size'></img>" +
-                "<img src='./img/back.jpg' id='" + arr[i] + "' class='card-back size'></img>" +
+        let cellHtml = '';
+        for (let i = 0; i < list.length; i++) {
+            cellHtml +=
+                "<div class='cell'>" +
+                    "<img src='./img/image (" + list[i] + ").jpg' class='cell-img'></img>" +
+                    "<img src='./img/image (" + list[i] + ").jpg' class='back-img'></img>" +
                 "</div>"
         }
-        document.getElementById('main').innerHTML = cardHtml;
-        let domList = document.getElementsByClassName('card-back');
-        for (let i = 0; i < domList.length; i++) {
-            let dom = domList[i];
-            dom.onclick = function () {
-                let item = preDom;
-                dom.className = "card-back size card-show";
-                if (item == null) {
-                    preDom = dom;
-                } else {
-                    console.log(dom.id, item.id)
-                    if (dom.id != item.id) {
-                        setTimeout(function () {
-                            console.log('ddd');
-                            item.className = "card-back size card-hidden";
-                            dom.className = "card-back size card-hidden";
-                        }, 500);
-                    } else {
-                        showCount++;
-                    }
-                    if (showCount >= 8) {
-                        setTimeout(function () {
-                            alert('你太厉害了!!!');
-                        }, 500);
-                    }
-                    preDom = null;
-                }
-            }
-        }
+        document.getElementById('main').innerHTML = cellHtml;
+        
     }
 </script>
 
