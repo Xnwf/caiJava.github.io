@@ -51,7 +51,7 @@
         .back-hidden {
             margin-left: -80px;
             margin-top: -80px;
-            -webkit-animation: hidden 0.5s;
+            -webkit-animation: hidden 0.3s;
         }
 
         @-webkit-keyframes hidden {
@@ -69,7 +69,7 @@
         .back-show {
             margin-left: 0px;
             margin-top: 0px;
-            -webkit-animation: show 0.5s;
+            -webkit-animation: show 0.3s;
         }
 
         @-webkit-keyframes show {
@@ -95,6 +95,11 @@
     let list = [1, 2, 3, 4, 5, 6, 7, 8];
     list.push(...list);
 
+    // 记录上一次点击的图片
+    let preImg = null;
+    // 记录已经成功找出多少对图片
+    let count = 0;
+
     for (let i = 0; i < list.length; i++) {
         let r1 = ~~(Math.random() * list.length);
         let r2 = ~~(Math.random() * list.length);
@@ -108,11 +113,38 @@
             cellHtml +=
                 "<div class='cell'>" +
                     "<img src='./img/image (" + list[i] + ").jpg' class='cell-img'></img>" +
-                    "<img src='./img/image (" + list[i] + ").jpg' class='back-img'></img>" +
+                    "<img src='./img/back.jpg' id='" + list[i] + "' class='back-img'></img>" +
                 "</div>"
         }
         document.getElementById('main').innerHTML = cellHtml;
         
+        let imgList = document.getElementsByClassName('back-img');
+        for (let i = 0; i < imgList.length; i ++) {
+            let currentImg = imgList[i];
+            currentImg.onclick = function() {
+                let pre = preImg;
+                currentImg.className = 'back-img back-hidden';
+                if (pre) {
+                    console.log(pre.id, currentImg.id);
+                    if (pre.id != currentImg.id) {
+                        setTimeout(function() {
+                            pre.className = 'back-img back-show';
+                            currentImg.className = 'back-img back-show';
+                        }, 500);
+                    } else {
+                        if (++ count == 8) {
+                            setTimeout(function() {
+                                alert('你真厉害!!!');
+                            }, 300);
+                        }
+                    }
+                    preImg = null;
+                } else {
+                    preImg = currentImg;
+                }
+            }
+        }
+
     }
 </script>
 

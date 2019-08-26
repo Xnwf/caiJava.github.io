@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./js/Node.js"></script>
+    <script src="./js/BST.js"></script>
+    <title>BST</title>
+</head>
+<body>
+    <canvas id="can"></canvas>
+</body>
+<script>
+    const WIDTH = 400;
+    const HEIGHT = 800;
+    window.onload = function() {
+        const canDom = document.getElementById('can');
+        canDom.width = WIDTH;
+        canDom.height = HEIGHT;
+        
+        let tree = new BST(new Node(10));
+        tree.left = new Node(8);
+        tree.right = new Node(12);
+        tree.left.left = new Node(6);
+        console.log(tree.root);
+        console.log(tree.left);
+        console.log(tree.right);
+    }
+</script>
+</html>
