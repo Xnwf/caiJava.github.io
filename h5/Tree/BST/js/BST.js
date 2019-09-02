@@ -11,53 +11,50 @@ function Node(element) {
 function BST() {
     this.root = null;
     this.size = 0;
-    this.NODE_VERTICAL_DISTANT = 40;    
+    this.NODE_VERTICAL_DISTANT = 60;    
     this.ARC_SIZE = 14;
+    this.deep = 0;
+    this.direction = 0;
     /**
      * 渲染树
      */
-    this.render = function(ctx, node,  x, y) {
-        ctx.clearRect(0, 0, 500, 400);
+    this.render = function(ctx, canDom) {
+        this.deep = this.getDeep();
+        // 最后一层最多有多少个节点
+        let count = Math.pow(2, this.deep - 1);
+        let canWidth = (2 * count - 1) * this.ARC_SIZE * 2;
+
+        console.log('canWidth: ' + canWidth);
+        console.log('deep: ' + this.deep);
+
+        canDom.width = canWidth;
+        canDom.height = (this.deep + 1) * this.NODE_VERTICAL_DISTANT;
+        
+        ctx.clearRect(0, 0, canWidth, canDom.height);
+        
         if (this.root)
-        this.draw(node, ctx, x, y, Math.PI / 2.5);
+        this.draw(this.root, ctx, canDom.width / 2, this.ARC_SIZE, this.deep);
     }
     
     /**
      * 渲染结点递归实现
      */
-    this.draw = function(node, ctx, x, y, angle) {
+    this.draw = function(node, ctx, x, y, level) {
         if (node) {
+            if (node.left)
+                this.drawLine(ctx, x, y, x - (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT);
+            if (node.right)
+                this.drawLine(ctx, x, y, x + (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT);
             this.drawArc(node, ctx, x, y);
             // 判断是否有子树
-            if (node.left)
-                this.drawLine(ctx, x, y, x - this.getLevelDistant(angle), y + this.NODE_VERTICAL_DISTANT);
-            if (node.right)
-                this.drawLine(ctx, x, y, x + this.getLevelDistant(angle), y + this.NODE_VERTICAL_DISTANT);
         }
 
         if (node.left) {
-            this.draw(node.left, ctx, x - this.getLevelDistant(angle), y + this.NODE_VERTICAL_DISTANT, this.getNextAngle(angle));
+            this.draw(node.left, ctx, x - (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT, level - 1);
         }
         if (node.right) {
-            this.draw(node.right, ctx, x + this.getLevelDistant(angle), y + this.NODE_VERTICAL_DISTANT, this.getNextAngle(angle));
+            this.draw(node.right, ctx, x + (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT, level - 1);
         }
-
-        
-    }
-
-    /**
-     * 获取
-     */
-    this.getLevelDistant = function(angle) {
-        return Math.tan(angle) * this.NODE_VERTICAL_DISTANT;
-    }
-
-    /**
-     * 每一层角度变化
-     */
-    this.getNextAngle = function(angle) {
-        let result = 0.72 * angle + 0.09;
-        return result;
     }
 
     /**
@@ -69,11 +66,9 @@ function BST() {
         ctx.arc(x, y, this.ARC_SIZE, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
-
-        ctx.beginPath();
+        
         ctx.fillStyle = 'black';
-        ctx.fillText(node.element, x - this.ARC_SIZE / 1.5, y + this.ARC_SIZE / 2);
-        ctx.closePath();
+        ctx.fillText(node.element, x - this.ARC_SIZE / 2, y + this.ARC_SIZE / 2);
     }
 
     this.drawLine = function(ctx, x, y, toX, toY) {
@@ -81,6 +76,7 @@ function BST() {
         ctx.moveTo(x, y);
         ctx.lineTo(toX, toY);
         ctx.strokeStyle = 'yellow';
+        ctx.lineWidth = 3;
         ctx.stroke();
         ctx.closePath();
     }
@@ -183,7 +179,7 @@ function BST() {
         }  
             
         if (node.left == null) {
-            return node.rigth;
+            return node.right;
         } else if (node.right == null) {
             return node.left;
 
@@ -263,4 +259,19 @@ function BST() {
         }
     }
 
+    this.getDeep = function() {
+        this.deep = 0;
+        if (this.root == null) {
+            return 0;
+        }
+        return Math.max(this.getDeepRecursion(this.root.left, this.deep), this.getDeepRecursion(this.root.right, this.deep));
+    }
+
+    this.getDeepRecursion = function(node, deep) {
+        if (node == null) {
+            return deep;
+        }
+        deep = Math.max(this.getDeepRecursion(node.left, deep + 1), this.getDeepRecursion(node.right, deep + 1));
+        return deep;
+    }
 }

@@ -1,5 +1,5 @@
 // 横竖方向方块数量
-const WIDTH = 8; HEIGTH = 6;
+const WIDTH = 5; HEIGTH = 6;
 // 方块大小
 const CELL_SIZE = 80;
 // 间距
@@ -321,7 +321,7 @@ function createOneNumber() {
                 height: CELL_SIZE,
                 top: getPosTop(i, j),
                 left: getPosLeft(i, j),
-            })
+            }, MOVE_ANIMATION_TIME)
             break;
         }
     }

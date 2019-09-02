@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -38,18 +37,15 @@
         }
     </style>
 </head>
-
 <body>
-    <canvas id="can" width="500" height="250"></canvas></br>
-    <input id="element_input" /><button onclick="addElement()">Add Element</button></br>
+    <canvas id="can"></canvas></br>
+    <input id="element_input" onkeypress="addKeyEvent()"/><button onclick="addElement()">Add Element</button></br>
     <button onclick="removeMin()">Remove Min</button>
     <button onclick="removeMax()">Remove Max</button><br>
-    <input id="remove_element_input" /><button onclick="removeElement()">RevemoElement</button></br>
+    <input id="remove_element_input" onkeypress="removeKeyEvent()" /><button onclick="removeElement()">RevemoElement</button></br>
     <button onclick="getMin()">Get Min</button><button onclick="getMax()">Get Max</button>
 </body>
 <script>
-    const WIDTH = 400;
-    const HEIGHT = 800;
     const treeView = document.getElementById('treeView');;
     const canDom = document.getElementById('can');;
     const ctx = canDom.getContext('2d');;
@@ -58,7 +54,7 @@
     window.onload = function () {
         // 数组
         let arr = new Array();
-        const LENGTH = 8;
+        const LENGTH = 10;
         // 生成随机数组
         for (let i = 0; i < LENGTH; i++) {
             arr.push(~~(Math.random() * 100));
@@ -66,29 +62,41 @@
         for (let i = 0; i < arr.length; i++) {
             tree.add(arr[i]);
         }
-        tree.render(ctx, tree.root, canDom.width / 2, 20);
+        tree.render(ctx, canDom);
     }
 
     function addElement() {
         let element = document.getElementById('element_input').value;
         tree.add(element);
-        tree.render(ctx, tree.root, canDom.width / 2, 20);
+        tree.render(ctx, tree.root);
+    }
+
+    function addKeyEvent() {
+        if(event.which == 13) {
+            addElement();
+        }
     }
 
     function removeMin() {
         tree.removeMin();
-        tree.render(ctx, tree.root, canDom.width / 2, 20);
+        tree.render(ctx, tree.root);
     }
 
     function removeMax() {
         tree.removeMax();
-        tree.render(ctx, tree.root, canDom.width / 2, 20);
+        tree.render(ctx, tree.root);
     }
 
     function removeElement() {
         let element = document.getElementById('remove_element_input').value;
         tree.remove(element);
-        tree.render(ctx, tree.root, canDom.width / 2, 20);
+        tree.render(ctx, tree.root);
+    }
+
+    function removeKeyEvent() {
+        if(event.which == 13) {
+            removeElement();
+        }
     }
 
     function getMin() {
@@ -101,5 +109,4 @@
         alert('Max: ' + element);
     }
 </script>
-
 </html>
