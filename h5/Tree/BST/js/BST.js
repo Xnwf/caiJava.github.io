@@ -1,4 +1,16 @@
+
 /**
+	1. Node类
+	2. BST类
+	3. 添加一个节点
+	
+	4. 渲染树
+	
+	5. 删除最小节点
+	6. 删除最大节点
+	
+	7. 删除指定元素
+
  * 结点
  * @param {结点值} element 
  */
@@ -6,54 +18,58 @@ function Node(element) {
     this.element = element;
     this.left = null;
     this.right = null;
+    this.isOrder = false;
 }
 
 function BST() {
     this.root = null;
     this.size = 0;
-    this.NODE_VERTICAL_DISTANT = 60;    
+    this.NODE_VERTICAL_DISTANT = 60;
     this.ARC_SIZE = 14;
     this.deep = 0;
     this.direction = 0;
+    this.countWidth = 0;
     /**
      * 渲染树
      */
-    this.render = function(ctx, canDom) {
+    this.render = function(canDom) {
+        this.renderByRoot(this.root, canDom);
+    }
+    
+    this.renderByRoot = function(root, canDom) {
         this.deep = this.getDeep();
         // 最后一层最多有多少个节点
         let count = Math.pow(2, this.deep - 1);
-        let canWidth = (2 * count - 1) * this.ARC_SIZE * 2;
-
-        console.log('canWidth: ' + canWidth);
-        console.log('deep: ' + this.deep);
-
+        let canWidth = (2 * count - 1) * (this.ARC_SIZE * 2 + 10);
+    
         canDom.width = canWidth;
+        this.countWidth = canWidth;
         canDom.height = (this.deep + 1) * this.NODE_VERTICAL_DISTANT;
-        
+        let ctx = canDom.getContext('2d');
         ctx.clearRect(0, 0, canWidth, canDom.height);
         
-        if (this.root)
-        this.draw(this.root, ctx, canDom.width / 2, this.ARC_SIZE, this.deep);
+        if (root)
+        this.draw(root, ctx, this.countWidth / 2, this.ARC_SIZE, this.deep);
+
     }
-    
     /**
      * 渲染结点递归实现
      */
     this.draw = function(node, ctx, x, y, level) {
         if (node) {
             if (node.left)
-                this.drawLine(ctx, x, y, x - (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT);
+                this.drawLine(ctx, x, y, x - Math.pow(2, level - 2) * this.ARC_SIZE * 2 + 5, y + this.NODE_VERTICAL_DISTANT);
             if (node.right)
-                this.drawLine(ctx, x, y, x + (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT);
+                this.drawLine(ctx, x, y, x + Math.pow(2, level - 2) * this.ARC_SIZE * 2 + 5, y + this.NODE_VERTICAL_DISTANT);
             this.drawArc(node, ctx, x, y);
             // 判断是否有子树
         }
 
         if (node.left) {
-            this.draw(node.left, ctx, x - (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT, level - 1);
+            this.draw(node.left, ctx, x - Math.pow(2, level - 2) * this.ARC_SIZE * 2 + 5, y + this.NODE_VERTICAL_DISTANT, level - 1);
         }
         if (node.right) {
-            this.draw(node.right, ctx, x + (level - 1) * this.ARC_SIZE * 2, y + this.NODE_VERTICAL_DISTANT, level - 1);
+            this.draw(node.right, ctx, x + Math.pow(2, level - 2) * this.ARC_SIZE * 2 + 5, y + this.NODE_VERTICAL_DISTANT, level - 1);
         }
     }
 
@@ -62,12 +78,17 @@ function BST() {
      */
     this.drawArc = function(node, ctx, x, y) {
         ctx.beginPath();
-        ctx.fillStyle = 'yellow';
+        if (node.isOrder) {
+            ctx.fillStyle = 'red';
+        } else {
+            ctx.fillStyle = 'yellow';
+        }
         ctx.arc(x, y, this.ARC_SIZE, 0, Math.PI * 2);
         ctx.fill();
         ctx.closePath();
         
         ctx.fillStyle = 'black';
+        ctx.font = "18px Arial";
         ctx.fillText(node.element, x - this.ARC_SIZE / 2, y + this.ARC_SIZE / 2);
     }
 
@@ -91,7 +112,6 @@ function BST() {
             this.addDep(this.root, element);
         }
     }
-
 
     /**
      * 添加结点的递归实现
@@ -188,8 +208,6 @@ function BST() {
         let itemNode = this.getMinRecursion(node.right);
         itemNode.right = this.removeMinRecursion(node.right);
         itemNode.left = node.left;
-        console.log(node.left);
-        console.log(itemNode);
         return itemNode;
     }
 
@@ -197,7 +215,9 @@ function BST() {
      * 获取root为根结点的最小值
      */
     this.getMin = function() {
-        return this.getMinRecursion(this.root);
+        this.setAllIsOrderFalse();
+        this.getMinRecursion(this.root).isOrder = true;
+        this.render(canDom);
     }
 
     /**
@@ -212,7 +232,9 @@ function BST() {
      * 获取root为根结点的最大值 
      */
     this.getMax = function() {
-        return this.getMaxRecursion(this.root);
+        this.setAllIsOrderFalse();
+        this.getMaxRecursion(this.root).isOrder = true;
+        this.render(canDom);
     }
 
     /**
@@ -223,22 +245,54 @@ function BST() {
         return this.getMaxRecursion(node.right);
     }
 
+    this.setAllIsOrderFalse = function() {
+        this.setAllIsOrderFalseRecursion(this.root);
+    }
+
+    this.setAllIsOrderFalseRecursion = function(node) {
+        if(node) {
+            node.isOrder = false;
+        }
+        if (node.left) this.setAllIsOrderFalseRecursion(node.left);
+        if (node.right) this.setAllIsOrderFalseRecursion(node.right);
+    }
+
+    // 复制以root为根的二叉树
+    this.copyTree = function (root) {
+        let newRoot = new Node(root.element);
+        newRoot.isOrder = root.isOrder;
+        this.copyTreeRecursion(root, newRoot);
+        return newRoot; 
+    }
+
+    // 复制树的递归实现
+    this.copyTreeRecursion = function(node, newNode) {
+        if (node.left) {
+            newNode.left = new Node(node.left.element);
+            newNode.left.isOrder = node.left.isOrder;
+            this.copyTreeRecursion(node.left, newNode.left);
+        }
+        
+        if (node.right) {
+            newNode.right = new Node(node.right.element);
+            newNode.right.isOrder = node.right.isOrder;
+            this.copyTreeRecursion(node.right, newNode.right);
+        }
+    }
+
     /**
      * 前序遍历
      */
-    this.preOrder = function() {
-        this.preOrderDep(this.root);
+    this.preOrder = function(canDom) {
+        this.preOrderDep(canDom, this.root);
     }
 
     /**
      * 前序遍历递归实现
      */
-    this.preOrderDep = function(node) {
-        if(node) {
-            console.log(node.element);
-            this.preOrderDep(node.left);
-            this.preOrderDep(node.right);
-        }
+    this.preOrderDep = function(canDom, node) {
+        this.preOrderDep(canDom, node.left);
+        this.preOrderDep(canDom, node.right);
     }
 
     /**

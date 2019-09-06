@@ -11,12 +11,11 @@
             margin: 0px;
             text-align: center;
             background: linear-gradient(green, orange);
-            height: 800px;
+            height: 1000px;
         }
 
         input {
             border: none;
-            border-bottom: 2px solid green;
             margin: 5px;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             padding: 2px;
@@ -39,16 +38,15 @@
 </head>
 <body>
     <canvas id="can"></canvas></br>
-    <input id="element_input" onkeypress="addKeyEvent()"/><button onclick="addElement()">Add Element</button></br>
-    <button onclick="removeMin()">Remove Min</button>
-    <button onclick="removeMax()">Remove Max</button><br>
-    <input id="remove_element_input" onkeypress="removeKeyEvent()" /><button onclick="removeElement()">RevemoElement</button></br>
-    <button onclick="getMin()">Get Min</button><button onclick="getMax()">Get Max</button>
+    <input id="element_input" onkeypress="addKeyEvent()"/><button onclick="addElement()">添加指定元素</button></br>
+    <button onclick="removeMin()">删除最小节点</button>
+    <button onclick="removeMax()">删除最大节点</button><br>
+    <input id="remove_element_input" onkeypress="removeKeyEvent()" /><button onclick="removeElement()">删除指定节点</button></br>
+    <button onclick="getMin()">获取最小节点</button>
+    <button onclick="getMax()">获取最大节点</button>
 </body>
 <script>
-    const treeView = document.getElementById('treeView');;
     const canDom = document.getElementById('can');;
-    const ctx = canDom.getContext('2d');;
     const tree = new BST();
 
     window.onload = function () {
@@ -57,18 +55,18 @@
         const LENGTH = 10;
         // 生成随机数组
         for (let i = 0; i < LENGTH; i++) {
-            arr.push(~~(Math.random() * 100));
+            arr.push(~~(Math.random() * 20));
         }
         for (let i = 0; i < arr.length; i++) {
             tree.add(arr[i]);
         }
-        tree.render(ctx, canDom);
+        tree.render(canDom);
     }
 
     function addElement() {
         let element = document.getElementById('element_input').value;
         tree.add(element);
-        tree.render(ctx, tree.root);
+        tree.render(canDom);
     }
 
     function addKeyEvent() {
@@ -79,18 +77,18 @@
 
     function removeMin() {
         tree.removeMin();
-        tree.render(ctx, tree.root);
+        tree.render(canDom);
     }
 
     function removeMax() {
         tree.removeMax();
-        tree.render(ctx, tree.root);
+        tree.render(canDom);
     }
 
     function removeElement() {
         let element = document.getElementById('remove_element_input').value;
         tree.remove(element);
-        tree.render(ctx, tree.root);
+        tree.render(canDom);
     }
 
     function removeKeyEvent() {
@@ -100,13 +98,15 @@
     }
 
     function getMin() {
-        let element = tree.getMin().element;
-        alert('Min: ' + element);
+        tree.getMin(canDom)
+    }
+    
+    function getMax() {
+        tree.getMax(canDom)
     }
 
-    function getMax() {
-        let element = tree.getMax().element;
-        alert('Max: ' + element);
+    function preOrder() {
+        tree.preOrder(canDom);
     }
 </script>
 </html>
