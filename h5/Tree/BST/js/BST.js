@@ -25,10 +25,11 @@ function BST() {
     this.root = null;
     this.size = 0;
     this.NODE_VERTICAL_DISTANT = 60;
-    this.ARC_SIZE = 14;
+    this.ARC_SIZE = 20;
     this.deep = 0;
     this.direction = 0;
     this.countWidth = 0;
+    this.animationTime = 0;
     /**
      * 渲染树
      */
@@ -40,7 +41,7 @@ function BST() {
         this.deep = this.getDeep();
         // 最后一层最多有多少个节点
         let count = Math.pow(2, this.deep - 1);
-        let canWidth = (2 * count - 1) * (this.ARC_SIZE * 2 + 10);
+        let canWidth = (2 * count) * (this.ARC_SIZE * 2 + 10);
     
         canDom.width = canWidth;
         this.countWidth = canWidth;
@@ -88,7 +89,7 @@ function BST() {
         ctx.closePath();
         
         ctx.fillStyle = 'black';
-        ctx.font = "18px Arial";
+        ctx.font = "20px Arial";
         ctx.fillText(node.element, x - this.ARC_SIZE / 2, y + this.ARC_SIZE / 2);
     }
 
@@ -284,6 +285,9 @@ function BST() {
      * 前序遍历
      */
     this.preOrder = function(canDom) {
+        this.setAllIsOrderFalse();
+        this.render(canDom);
+        this.animationTime = 0;
         this.preOrderDep(canDom, this.root);
     }
 
@@ -291,25 +295,62 @@ function BST() {
      * 前序遍历递归实现
      */
     this.preOrderDep = function(canDom, node) {
-        this.preOrderDep(canDom, node.left);
-        this.preOrderDep(canDom, node.right);
+        if (node) {
+            node.isOrder = true;
+            let copyTree = this.copyTree(this.root);
+            let me = this;
+            setTimeout(function() {
+                me.renderByRoot(copyTree, canDom);
+            }, 1000 * ++ me.animationTime);
+            this.preOrderDep(canDom, node.left);
+            this.preOrderDep(canDom, node.right);
+        }
     }
 
     /**
      * 中序遍历
      */
-    this.inOrder = function() {
-        this.inOrderDep(this.root);
+    this.inOrder = function(canDom) {
+        this.setAllIsOrderFalse();
+        this.render(canDom);
+        this.animationTime = 0;
+        this.inOrderDep(canDom, this.root);
     }
 
     /**
      * 中序遍历递归实现
      */
-    this.inOrderDep = function(node) {
+    this.inOrderDep = function(canDom, node) {
         if(node) {
-            this.inOrderDep(node.left);
-            console.log(node.element);
-            this.inOrderDep(node.right);
+            this.inOrderDep(canDom, node.left);
+            node.isOrder = true;
+            let copyTree = this.copyTree(this.root);
+            let me = this;
+            setTimeout(function() {
+                me.renderByRoot(copyTree, canDom)
+            }, 1000 * ++ me.animationTime);
+            this.inOrderDep(canDom, node.right);
+        }
+    }
+
+    // 后序遍历
+    this.postOrder = function(canDom) {
+        this.setAllIsOrderFalse();
+        this.animationTime = 0;
+        this.render(canDom);
+        this.postOrderRecursion(canDom, this.root);
+    }
+
+    this.postOrderRecursion = function(canDom, node) {
+        if (node) {
+            this.postOrderRecursion(canDom, node.left);
+            this.postOrderRecursion(canDom, node.right);
+            node.isOrder = true;
+            let copyTree = this.copyTree(this.root);
+            let me = this;
+            setTimeout(function() {
+                me.renderByRoot(copyTree, canDom);
+            }, 1000 * ++ me.animationTime);
         }
     }
 

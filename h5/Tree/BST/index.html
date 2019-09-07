@@ -29,10 +29,11 @@
             border: none;
             border-radius: 5px;
             background: linear-gradient(green, yellow);
-            color: black;
+            color: #02383c;
             font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
             margin: 5px;
             padding: 5px;
+            font-weight: 800;
         }
     </style>
 </head>
@@ -43,7 +44,10 @@
     <button onclick="removeMax()">删除最大节点</button><br>
     <input id="remove_element_input" onkeypress="removeKeyEvent()" /><button onclick="removeElement()">删除指定节点</button></br>
     <button onclick="getMin()">获取最小节点</button>
-    <button onclick="getMax()">获取最大节点</button>
+    <button onclick="getMax()">获取最大节点</button><br>
+    <button onclick="preOrder()">前序遍历可视化</button>
+    <button onclick="inOrder()">中序遍历可视化</button>
+    <button onclick="postOrder()">后序遍历可视化</button>
 </body>
 <script>
     const canDom = document.getElementById('can');;
@@ -52,7 +56,7 @@
     window.onload = function () {
         // 数组
         let arr = new Array();
-        const LENGTH = 10;
+        const LENGTH = 15;
         // 生成随机数组
         for (let i = 0; i < LENGTH; i++) {
             arr.push(~~(Math.random() * 20));
@@ -107,6 +111,14 @@
 
     function preOrder() {
         tree.preOrder(canDom);
+    }
+
+    function inOrder() {
+        tree.inOrder(canDom);
+    }
+
+    function postOrder() {
+        tree.postOrder(canDom);
     }
 </script>
 </html>
