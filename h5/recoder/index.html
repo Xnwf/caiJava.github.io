@@ -5,99 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
-    <script src="./BST.js"></script>
-    <style>
-        body {
-            background: linear-gradient(green, yellow);
-            height: 1000px;
-            text-align: center;
-        }
-        input {
-            border: none;
-            margin: 5px;
-            padding: 2px;
-            border-radius: 10px;
-            height: 20px;
-            background: radial-gradient(green, yellow);
-            text-align: center;
-            color: white;
-            font-weight: 700;
-        }
-
-        button {
-            border: none;
-            border-radius: 10px;
-            color: black;
-            padding: 4px;
-            margin: 5px;
-            font-weight: 800;
-            background: linear-gradient(green, yellow);
-        }
-    </style>
+    <script src="./main.js"></script>
+    <script src="./render.js"></script>
 </head>
-<body>
-    <canvas id="can"></canvas><br>
-    <input id="addElement" /><button onclick="add()">增加节点</button><br>
-    <button onclick="getMin()">获取最小节点</button>
-    <button onclick="getMax()">获取最大节点</button><br>
-    <button onclick="removeMin()">删除最小节点</button>
-    <button onclick="removeMax()">删除最大节点</button><br>
-    <input id="removeElement" /><button onclick="remove()">删除节点</button><br>
-    <button onclick="preOrder()">前序遍历</button>
-    <button onclick="inOrder()">中序遍历</button>
-    <button onclick="postOrder()">后序遍历</button>
+<body style="background: linear-gradient(green, blue); height: 1000px">
+    <canvas id="can"></canvas>
 </body>
-<script>
-    const bst = new BST();
-    const canDom = document.getElementById('can');
-    window.onload = function() {
-        for (let i = 0; i < 15; i ++) {
-            bst.add(~~(Math.random() * 20));
-        }
-        bst.render(canDom);
-    }
-    function add() {
-        let element = document.getElementById('addElement').value;
-        bst.add(element);
-        bst.initNodeColor();
-        bst.render(canDom);
-    }
-
-    function getMin() {
-        bst.initNodeColor();
-        let minNode = bst.getMin();
-        bst.initNodeColor();
-        minNode.isCheck = true;
-        bst.render(canDom);
-    }
-    
-    function getMax() {
-        bst.initNodeColor();
-        let maxNode = bst.getMax();
-        bst.initNodeColor();
-        maxNode.isCheck = true;
-        bst.render(canDom);
-    }
-
-    function removeMin() {
-        bst.removeMin();
-        bst.render(canDom);
-    }
-    
-    function removeMax() {
-        bst.removeMax();
-        bst.render(canDom);
-    }
-
-    function remove() {
-        let element = document.getElementById('removeElement').value;
-        bst.remove(element);
-        bst.render(canDom);
-    }
-
-    function preOrder() {bst.preOrder(canDom)}
-    function inOrder() {bst.inOrder(canDom)}
-    function postOrder() {bst.postOrder(canDom)}
-</script>
-
 </html>
