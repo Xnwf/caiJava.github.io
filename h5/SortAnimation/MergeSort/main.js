@@ -1,4 +1,4 @@
-const WIDTH = 400, HEIGHT = 600;
+const WIDTH = 1200, HEIGHT = 600;
 const COLUMN_WIDTH = 10, COLUMN_MARGIN = 1;
 const LENGTH = ~~(WIDTH / (COLUMN_MARGIN + COLUMN_WIDTH));
 
@@ -56,7 +56,7 @@ function animation(ctx, arr, orderIndex, l, r) {
     let renderArr = copyArray(arr, 0, arr.length - 1);
     setTimeout(function() {
         render(ctx, renderArr, orderIndex, l, r);
-    }, animationTime ++ * 50);
+    }, animationTime ++ * 100);
 
 }
 
